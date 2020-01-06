@@ -41,12 +41,6 @@ app.put('/update_evaluacion', (request, response) => {
     } else {
         response.send({ error: 400 })
     }
-
-
-
-
-
-
 });
 
 app.put('/update_evaluacion_numerica', (request, response) => {
@@ -76,10 +70,23 @@ app.put('/update_evaluacion_numerica', (request, response) => {
             response.send({ message: 'Evaluación Actualizada' });
         }
     })
+});
 
+app.post('/update_objetivo', (request, response) => {
+    //const datos = `{ "id_eva": ${ id }, "tipo": "A", "resultado_p1": ${ c1 }, "resultado_p2": ${ c2 }, "resultado_n": ${ resultCon }, "estatus": "${ res }" }`;
+    let id = request.body.id;
+    let nombre_obj = request.body.nombre;
 
+    console.log(id);
+    console.log(nombre_obj);
 
-
+    db.query('UPDATE kpi_padres SET nombre_kpi_padre = $1 WHERE id_kpi_padre = $2', [nombre_obj, id], (err, result) => {
+        if (err) {
+            response.send({ err });
+        } else {
+            response.send({ message: 'Objetivo Actualizado' });
+        }
+    })
 });
 
 module.exports = app;

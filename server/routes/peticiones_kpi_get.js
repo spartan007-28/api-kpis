@@ -20,7 +20,7 @@ app.get('/lista_todos_kpis', (request, response) => {
 })
 
 app.get('/objetivo_kpis', (request, response) => {
-    db.query('SELECT * FROM kpi_padres', (err, result) => {
+    db.query('SELECT * FROM kpi_padres ORDER BY id_kpi_padre ASC', (err, result) => {
         if (err) throw err;
         //const datos = JSON.stringify(result.rows)
         response.json(result.rows);
