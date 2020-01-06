@@ -12,7 +12,7 @@ app.get('/lista_kpis', (request, response) => {
 })
 
 app.get('/lista_todos_kpis', (request, response) => {
-    db.query('select kc.id_kpi_c, kc.folio_kpi_c, kr.nombre_objetivo, kc.descripcion, kc.medicion, kc.evidencia, kc.periodo, kc.area,  kc.meta_real, kc.evaluacion FROM kpi_root kr INNER JOIN kpi_child kc ON kr.id_kpi = kc.id_kpi_r ORDER BY kc.folio_kpi_c ASC', (err, result) => {
+    db.query('SELECT kh.id_kpi_hijo, kp.nombre_kpi_padre, kh.descripcion, kh.area, kh.meta, kh.objetivo, kh.unidades, kh.periodo, kh.anio, kh.formula_datos FROM kpi_hijos kh INNER JOIN kpi_padres kp ON kh.id_padre = kp.id_kpi_padre ORDER BY kh.id_kpi_hijo;', (err, result) => {
         if (err) throw err;
         //const datos = JSON.stringify(result.rows)
         response.json(result.rows);

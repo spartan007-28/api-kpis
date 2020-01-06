@@ -23,6 +23,7 @@ app.use(bodyParser.json())
 app.use(require('./routes/peticiones_kpi_post'));
 app.use(require('./routes/peticiones_kpi_get'));
 app.use(require('./routes/peticiones_kpi_put'));
+app.use(require('./routes/peticiones_kpi_delete'));
 app.use(require('./routes/peticiones_auth_kpis'));
 
 
