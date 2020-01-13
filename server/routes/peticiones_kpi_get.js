@@ -11,6 +11,14 @@ app.get('/lista_kpis', (request, response) => {
     })
 })
 
+app.get('/numero_kpis', (request, response) => {
+    db.query('SELECT kp.nombre_kpi_padre, COUNT(*) AS numero FROM kpi_hijos kh INNER JOIN kpi_padres kp ON kh.id_padre = kp.id_kpi_padre GROUP BY kp.nombre_kpi_padre', (err, result) => {
+        if (err) throw err;
+        //const datos = JSON.stringify(result.rows)
+        response.json(result.rows);
+    })
+})
+
 app.get('/lista_todos_kpis', (request, response) => {
     db.query('SELECT kh.id_kpi_hijo, kp.nombre_kpi_padre, kh.descripcion, kh.area, kh.meta, kh.objetivo, kh.unidades, kh.periodo, kh.anio, kh.formula_datos FROM kpi_hijos kh INNER JOIN kpi_padres kp ON kh.id_padre = kp.id_kpi_padre ORDER BY kh.id_kpi_hijo;', (err, result) => {
         if (err) throw err;
@@ -109,6 +117,106 @@ app.get('/all_users', (request, response) => {
     db.query('SELECT nombre, apellido, usuario, role_user, area_role, estatus FROM usuarios', (err, result) => {
         if (err) throw err;
         response.json(result.rows)
+    })
+})
+
+/*-----------------------------*/
+
+app.get('/total_semanales', (request, response) => {
+    let periodo = 'Semanal';
+
+    db.query('SELECT kh.periodo, e.estatus, COUNT(*) AS numero FROM evaluaciones_kpi e INNER JOIN kpi_hijos kh ON kh.id_kpi_hijo = e.id_hijo WHERE kh.periodo = $1 GROUP BY kh.periodo, e.estatus;', [periodo], (err, result) => {
+        if (err) throw err;
+        response.json(result.rows);
+    })
+})
+
+app.get('/total_mensual', (request, response) => {
+    let periodo = 'Mensual';
+
+    db.query('SELECT kh.periodo, e.estatus, COUNT(*) AS numero FROM evaluaciones_kpi e INNER JOIN kpi_hijos kh ON kh.id_kpi_hijo = e.id_hijo WHERE kh.periodo = $1 GROUP BY kh.periodo, e.estatus;', [periodo], (err, result) => {
+        if (err) {
+            throw err;
+        } else if (result.rowCount === 0) {
+            response.send({
+                message: "No existen registros",
+                status: 0
+            })
+        } else {
+            response.json(result.rows);
+        }
+
+    })
+})
+
+app.get('/total_trimestral', (request, response) => {
+    let periodo = 'Trimestral';
+
+    db.query('SELECT kh.periodo, e.estatus, COUNT(*) AS numero FROM evaluaciones_kpi e INNER JOIN kpi_hijos kh ON kh.id_kpi_hijo = e.id_hijo WHERE kh.periodo = $1 GROUP BY kh.periodo, e.estatus;', [periodo], (err, result) => {
+        if (err) {
+            throw err;
+        } else if (result.rowCount === 0) {
+            response.send({
+                message: "No existen registros",
+                status: 0
+            })
+        } else {
+            response.json(result.rows);
+        }
+
+    })
+})
+
+app.get('/total_semestral', (request, response) => {
+    let periodo = 'Semestral';
+
+    db.query('SELECT kh.periodo, e.estatus, COUNT(*) AS numero FROM evaluaciones_kpi e INNER JOIN kpi_hijos kh ON kh.id_kpi_hijo = e.id_hijo WHERE kh.periodo = $1 GROUP BY kh.periodo, e.estatus;', [periodo], (err, result) => {
+        if (err) {
+            throw err;
+        } else if (result.rowCount === 0) {
+            response.send({
+                message: "No existen registros",
+                status: 0
+            })
+        } else {
+            response.json(result.rows);
+        }
+
+    })
+})
+
+app.get('/verificar_obs/:code', (request, response) => {
+    let id = request.params.code;
+    db.query('SELECT * FROM observaciones WHERE id_obs_eva = $1', [id], (err, result) => {
+        if (err) {
+            throw err;
+        } else if (result.rowCount === 0) {
+            response.send({
+                message: "No existe ninguna observacion",
+                status: 100
+            })
+        } else {
+            response.send({
+                message: "Existe una observacion",
+                status: 200
+            })
+        }
+    })
+})
+
+app.get('/mostrar_obs/:id', (request, response) => {
+    let id = request.params.id;
+    db.query('SELECT * FROM observaciones WHERE id_obs_eva = $1', [id], (err, result) => {
+        if (err) {
+            throw err;
+        } else if (result.rowCount === 0) {
+            response.send({
+                message: "¡No existe ninguna observacion!",
+                status: 100
+            })
+        } else {
+            response.json(result.rows);
+        }
     })
 })
 

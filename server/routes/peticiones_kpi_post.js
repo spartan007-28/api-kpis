@@ -130,4 +130,22 @@ app.post('/agregar_usuario', (request, response) => {
 })
 
 
+app.post('/add_obs', (request, response) => {
+    let id = request.body.id;
+    let obs = request.body.observacion;
+
+    console.log(id);
+    console.log(obs);
+
+    db.query('INSERT INTO observaciones (id_obs_eva, observacion) VALUES ($1, $2)', [id, obs], (err, result) => {
+        if (err) {
+            response.send({ err });
+        } else {
+            response.send({ message: '¡Observacion Agregada!' });
+        }
+    });
+
+})
+
+
 module.exports = app;

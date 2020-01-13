@@ -72,7 +72,7 @@ app.put('/update_evaluacion_numerica', (request, response) => {
     })
 });
 
-app.post('/update_objetivo', (request, response) => {
+app.put('/update_objetivo', (request, response) => {
     //const datos = `{ "id_eva": ${ id }, "tipo": "A", "resultado_p1": ${ c1 }, "resultado_p2": ${ c2 }, "resultado_n": ${ resultCon }, "estatus": "${ res }" }`;
     let id = request.body.id;
     let nombre_obj = request.body.nombre;
@@ -85,6 +85,23 @@ app.post('/update_objetivo', (request, response) => {
             response.send({ err });
         } else {
             response.send({ message: 'Objetivo Actualizado' });
+        }
+    })
+});
+
+app.put('/update_observacion', (request, response) => {
+    //const datos = `{ "id_eva": ${ id }, "tipo": "A", "resultado_p1": ${ c1 }, "resultado_p2": ${ c2 }, "resultado_n": ${ resultCon }, "estatus": "${ res }" }`;
+    let id = request.body.id;
+    let obs = request.body.observacion;
+
+    // console.log(id);
+    // console.log(obs);
+
+    db.query('UPDATE observaciones SET observacion = $1 WHERE id_obs_eva = $2', [obs, id], (err, result) => {
+        if (err) {
+            response.send({ err });
+        } else {
+            response.send({ message: '¡Actualizada Correctamente!' });
         }
     })
 });
