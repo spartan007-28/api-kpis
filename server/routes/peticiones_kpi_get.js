@@ -11,6 +11,24 @@ app.get('/lista_kpis', (request, response) => {
     })
 })
 
+app.get('/kpi_id/:id', (request, response) => {
+    const id = request.params.id;
+    db.query('SELECT * FROM kpi_hijos WHERE id_kpi_hijo = $1', [id], (err, result) => {
+        if (err) throw err;
+        //const datos = JSON.stringify(result.rows)
+        response.json(result.rows);
+    })
+})
+
+app.get('/search/:id', (request, response) => {
+    const id = request.params.id;
+    db.query('SELECT COUNT(*) FROM evaluaciones_kpi WHERE id_hijo = $1', [id], (err, result) => {
+        if (err) throw err;
+        //const datos = JSON.stringify(result.rows)
+        response.json(result.rows);
+    })
+})
+
 app.get('/numero_kpis', (request, response) => {
     db.query('SELECT kp.nombre_kpi_padre, COUNT(*) AS numero FROM kpi_hijos kh INNER JOIN kpi_padres kp ON kh.id_padre = kp.id_kpi_padre GROUP BY kp.nombre_kpi_padre', (err, result) => {
         if (err) throw err;
@@ -96,7 +114,7 @@ app.get('/kpi/:folio_kpi/:periodo_kpi', (request, response) => {
     console.log(folio);
     console.log(periodo);
 
-    db.query('SELECT e.id_eva, kh.descripcion, e.estatus FROM kpi_hijos kh INNER JOIN evaluaciones_kpi e ON kh.id_kpi_hijo = e.id_hijo WHERE kh.periodo = $1 AND e.id_hijo = $2 ORDER BY e.id_eva ASC', [periodo, folio], (err, result) => {
+    db.query('SELECT e.id_eva, kh.descripcion, e.estatus, e.resultado_numerico, e.resultado_desicion, e.fecha_hora FROM kpi_hijos kh INNER JOIN evaluaciones_kpi e ON kh.id_kpi_hijo = e.id_hijo WHERE kh.periodo = $1 AND e.id_hijo = $2 ORDER BY e.id_eva ASC', [periodo, folio], (err, result) => {
         if (err) throw err;
         response.json(result.rows)
     })
@@ -217,6 +235,15 @@ app.get('/mostrar_obs/:id', (request, response) => {
         } else {
             response.json(result.rows);
         }
+    })
+})
+
+app.get('/info_kpi/:id', (request, response) => {
+    const id = request.params.id;
+    db.query('SELECT kp.nombre_kpi_padre, kh.area, kh.meta, kh.objetivo, kh.unidades, kh.periodo, kh.numero_kpis, kh.contador_kpis, kh.anio, kh.tipo_evaluacion, kh.formula_datos, kh.pregunta_uno, kh.pregunta_dos FROM kpi_padres kp INNER JOIN kpi_hijos kh ON kp.id_kpi_padre = kh.id_padre WHERE kh.id_kpi_hijo = $1', [id], (err, result) => {
+        if (err) throw err;
+        // console.log(err);
+        response.json(result.rows)
     })
 })
 

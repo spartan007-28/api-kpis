@@ -25,6 +25,7 @@ app.use(require('./routes/peticiones_kpi_get'));
 app.use(require('./routes/peticiones_kpi_put'));
 app.use(require('./routes/peticiones_kpi_delete'));
 app.use(require('./routes/peticiones_auth_kpis'));
+app.use(require('./routes/peticiones_graficas'));
 
 
 app.listen(port, () => {

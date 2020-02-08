@@ -106,4 +106,76 @@ app.put('/update_observacion', (request, response) => {
     })
 });
 
+app.put('/actualizar_kpi', (request, response) => {
+
+    let tipo = request.body.tipo;
+
+    console.log(tipo);
+
+    if (tipo === 'completa') {
+        let id_k = request.body.id_kpi_hijo;
+        let id = request.body.id_padre;
+        let des = request.body.descripcion;
+        let fd = request.body.formula_datos;
+        let obj = request.body.objetivo;
+        let meta = request.body.meta;
+        let area = request.body.area;
+        let periodo = request.body.periodo;
+
+        let numeroKPI;
+
+        //console.log(nombre_objetivo);
+
+        if (periodo == 'Semanal') {
+            numeroKPI = 52;
+        } else if (periodo == 'Mensual') {
+            numeroKPI = 12;
+        } else if (periodo == 'Trimestral') {
+            numeroKPI = 4;
+        } else if (periodo == 'Semestral') {
+            numeroKPI = 2;
+        } else if (periodo == 'Anual') {
+            numeroKPI = 1;
+        }
+
+        let contador = 0;
+        let evaluacion = request.body.tipo_evaluacion;
+        let unidades = request.body.unidades;
+        let anio = request.body.anio;
+        let p1 = request.body.pregunta_uno;
+        let p2 = request.body.pregunta_dos;
+
+        db.query('UPDATE kpi_hijos SET id_padre = $1, descripcion = $2, area = $3, meta = $4, objetivo = $5, unidades = $6, periodo = $7, numero_kpis = $8, anio = $9, tipo_evaluacion = $10, formula_datos = $11, pregunta_uno = $12, pregunta_dos = $13 WHERE id_kpi_hijo = $14', [id, des, area, meta, obj, unidades, periodo, numeroKPI, anio, evaluacion, fd, p1, p2, id_k], (err, result) => {
+            if (err) {
+                console.log(err);
+                response.send({ err });
+            } else {
+                response.send({ message: 'KPI Actualizado Correctamente' });
+            }
+        })
+
+    } else {
+        console.log('In');
+        let id_k = request.body.id_kpi_hijo;
+        let id = request.body.id_padre;
+        let des = request.body.descripcion;
+        let fd = request.body.formula_datos;
+        let meta = request.body.meta;
+        let area = request.body.area;
+
+        let anio = request.body.anio;
+        let p1 = request.body.pregunta_uno;
+        let p2 = request.body.pregunta_dos;
+
+        db.query('UPDATE kpi_hijos SET id_padre = $1, descripcion = $2, area = $3, meta = $4, anio = $5, formula_datos = $6, pregunta_uno = $7, pregunta_dos = $8 WHERE id_kpi_hijo = $9', [id, des, area, meta, anio, fd, p1, p2, id_k], (err, result) => {
+            if (err) {
+                console.log(err);
+                response.send({ err });
+            } else {
+                response.send({ message: 'KPI Actualizado Correctamente' });
+            }
+        })
+    }
+});
+
 module.exports = app;
