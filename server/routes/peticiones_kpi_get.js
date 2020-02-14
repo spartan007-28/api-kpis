@@ -234,6 +234,7 @@ app.get('/mostrar_obs/:id', (request, response) => {
             })
         } else {
             response.json(result.rows);
+
         }
     })
 })
